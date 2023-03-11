@@ -49,3 +49,16 @@ app.put('/api/courses/:id', (req, res) => {
   course.name = req.body.name
   res.send(course)
 })
+
+app.delete('/api/courses/:id', (req, res) => {
+  const course = courses.find((course) => course.id === parseInt(req.params.id))
+  if (!course) {
+    // 指定されたidのcourseが存在しない場合
+    return res.status(404).send('The course with the given ID was not found.')
+  }
+
+  const index = courses.indexOf(course)
+  courses.splice(index, 1)
+
+  res.send(course)
+})
