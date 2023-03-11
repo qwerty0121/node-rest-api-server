@@ -38,3 +38,14 @@ app.post('/api/courses', (req, res) => {
   courses.push(course)
   res.send(course)
 })
+
+app.put('/api/courses/:id', (req, res) => {
+  const course = courses.find((course) => course.id === parseInt(req.params.id))
+  if (!course) {
+    // 指定されたidのcourseが存在しない場合
+    return res.status(404).send('The course with the given ID was not found.')
+  }
+
+  course.name = req.body.name
+  res.send(course)
+})
