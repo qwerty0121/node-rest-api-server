@@ -1,4 +1,5 @@
-const express = require('express')
+import express from 'express'
+
 const app = express()
 
 app.use(express.json())
@@ -10,14 +11,21 @@ app.get('/', (req, res) => {
   res.send('Simple REST API')
 })
 
-const courses = [
+type Course = {
+  id: number,
+  name:  string
+}
+const courses: Course[] = [
   { id: 1, name: 'computer science'},
   { id: 2, name: 'information technology'},
   { id: 3, name: 'business intelligence'}
 ]
 
 // idを採番する
-const sequence = ((start) => {
+type Sequence = {
+  next: () => number
+}
+const sequence: Sequence = ((start) => {
   let current = start ?? 0
   return {
     next () {
@@ -31,7 +39,7 @@ app.get('/api/courses', (req, res) => {
 })
 
 app.post('/api/courses', (req, res) => {
-  const course = {
+  const course: Course = {
     id: sequence.next(),
     name: req.body.name
   }
