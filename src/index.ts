@@ -1,3 +1,9 @@
+import * as dotenv from 'dotenv'
+const NODE_ENV = process.env.NODE_ENV ?? 'production'
+if (NODE_ENV !== 'production') {
+  dotenv.config()
+}
+
 import express from 'express'
 import root from './routes/root'
 import course from './routes/course'
