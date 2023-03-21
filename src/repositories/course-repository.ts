@@ -1,82 +1,38 @@
-import { OkPacket, RowDataPacket } from 'mysql2'
-import { pool } from '../database'
-import { Course, CoursePk } from '../types/entity/course'
+import { PrismaClient, Course } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export function listCourse (): Promise<Course[]> {
-  return new Promise((resolve) => {
-    pool.query(
-      'select * from course',
-      (error, results) => {
-        if (error) {
-          throw error
-        }
-        resolve(results as Course[])
-      }
-    )
-  })
+  return prisma.course.findMany()
 }
 
-export function findCourseById (id: CoursePk): Promise<Course> {
-  return new Promise((resolve) => {
-    pool.query(
-      'select * from course where id = ?',
-      id,
-      (error, results: RowDataPacket[]) => {
-        if (error) {
-          throw error
-        }
-        const [course] = results
-        resolve(course as Course)
-      }
-    )
+export function findCourseById (id: number): Promise<Course | null> {
+  return prisma.course.findUnique({
+    where: {
+      id
+    }
   })
 }
 
 export function insertCourse (course: Omit<Course, 'id'>): Promise<Course> {
-  return new Promise((resolve) => {
-    pool.query(
-      'insert into course set ?',
-      course,
-      (error, result: OkPacket) => {
-        if (error) {
-          throw error
-        }
-        resolve({
-          id: result.insertId,
-          ...course
-        })
-      }
-    )
+  return prisma.course.create({
+    data: course
   })
 }
 
 export function updateCourse (course: Course): Promise<Course> {
-  const { id, ...courseWithoutId} = course
-  return new Promise((resolve) => {
-    pool.query(
-      'update course set ? where id = ?',
-      [courseWithoutId, id],
-      (error) => {
-        if (error) {
-          throw error
-        }
-        resolve(course)
-     }
-    )
+  return prisma.course.update({
+    where: {
+      id: course.id
+    },
+    data: course
   })
 }
 
-export function deleteCourse (id: CoursePk): Promise<void> {
-  return new Promise((resolve) => {
-    pool.query(
-      'delete from course where id = ?',
-      id,
-      (error) => {
-        if (error) {
-          throw error
-        }
-        resolve()
-     }
-    )
+export function deleteCourse (id: number): Promise<Course> {
+  return prisma.course.delete({
+    where: {
+      id
+    }
   })
 }
