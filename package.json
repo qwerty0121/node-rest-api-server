@@ -4,7 +4,9 @@
   "description": "",
   "scripts": {
     "dev": "NODE_ENV=development nodemon src/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "start:prod": "node dist",
+    "start:migrate:prod": "prisma migrate deploy && npm run start:prod"
   },
   "keywords": [],
   "author": "",

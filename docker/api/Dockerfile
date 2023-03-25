@@ -6,12 +6,11 @@ COPY ./ .
 RUN npm run build
 
 FROM node:19.2-alpine
-ENV PORT 3000
+ENV PORT=3000
 USER node
 EXPOSE ${PORT}
 WORKDIR /usr/src/app
-COPY --chown=node:node package.json package-lock.json ./
+COPY --chown=node:node package.json package-lock.json prisma ./
 RUN npm install --production
 COPY --chown=node:node --from=builder /usr/src/app/dist ./dist
-EXPOSE 80
-CMD [ "node", "dist/index.js"]
+CMD [ "npm", "run", "start:migrate:prod" ]
